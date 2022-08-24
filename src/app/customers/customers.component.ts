@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {CustomerService} from "../services/customer.service";
 
 @Component({
   selector: 'app-customers',
@@ -9,10 +10,17 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
 })
 export class CustomersComponent implements OnInit {
   customers: any;
-  constructor(private http:HttpClient) { }
+  constructor(private customerService:CustomerService) { }
 
   ngOnInit(): void {
-
+    this.customerService.getCustomers().subscribe({
+      next: (data)=>{
+        this.customers=data;
+      },
+      error: (error)=>{
+        console.log(error);
+      }
+    })
   }
 
 }
