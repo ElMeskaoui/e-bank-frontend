@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {error} from "@angular/compiler-cli/src/transformers/util";
 import {CustomerService} from "../services/customer.service";
+import {catchError, Observable, throwError} from "rxjs";
+import {Customer} from "../models/customer.model";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-customers',
@@ -9,18 +12,30 @@ import {CustomerService} from "../services/customer.service";
   styleUrls: ['./customers.component.css']
 })
 export class CustomersComponent implements OnInit {
-  customers: any;
-  constructor(private customerService:CustomerService) { }
+  customers!: Observable<Array<Customer>>;
+  errorMessage!: string;
+  searchFormGroup: FormGroup | undefined;
+  constructor(private customerService:CustomerService, private fg: FormBuilder) { }
 
   ngOnInit(): void {
-    this.customerService.getCustomers().subscribe({
-      next: (data)=>{
-        this.customers=data;
-      },
-      error: (error)=>{
-        console.log(error);
-      }
+    this.searchFormGroup=this.fg.group({
+      keyword : this.fg.control("")
     })
+    this.customers=this.customerService.getCustomers().pipe(
+      catchError(err => {
+        this.errorMessage=err.message;
+        return throwError(err);
+      })
+    );
   }
 
+  handleSearchCustomers() {
+    let kw=this.searchFormGroup?.value.keyword;
+    this.customers=this.customerService.searchCustomers(kw).pipe(
+      catchError(err => {
+        this.errorMessage=err.message;
+        return throwError(err);
+      })
+    );
+  }
 }
