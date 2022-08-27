@@ -1,0 +1,51 @@
+<div class="container">
+  <ng-container *ngIf="bankAccounts | async as listBankAccounts else errorMessageOrLoading">
+    <div class="card mt-3">
+      <div class="card-header">List Bank Accounts</div>
+      <div class="card-body">
+        <div *ngIf="searchFormGroupAccounts">
+          <form [formGroup]="searchFormGroupAccounts" (ngSubmit)="searchFormCustomerBankAccounts()">
+            <div class="input-group">
+              <label class="input-group-text">Keyword:</label>
+              <input type="text" class="form-control" formControlName="keyword">
+              <button class="btn btn-primary">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Id</th>
+            <th>Customer Name</th>
+            <th>type</th>
+            <th>Balance</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let b of bankAccounts | async">
+            <td>{{b.id}}</td>
+            <td>{{b.customerDto.name}}</td>
+            <td>{{b.type}}</td>
+            <td>{{b.balance}} {{b.currency}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #errorMessageOrLoading>
+    <ng-container *ngIf="errorMessage; else loading">
+      <div class="text-danger">
+        {{errorMessage}}
+      </div>
+    </ng-container>
+    <ng-template #loading>
+      <div>
+        Loading..............
+      </div>
+    </ng-template>
+
+  </ng-template>
+</div>
