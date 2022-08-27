@@ -3,6 +3,9 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {AccountService} from "../services/account.service";
 import {Observable} from "rxjs";
 import {AccountDetail} from "../models/account.model";
+import {Credit} from "../models/credit.model";
+import {Debit} from "../models/debit.model";
+import {Transfer} from "../models/transfer.model";
 
 @Component({
   selector: 'app-accounts',
@@ -29,20 +32,23 @@ export class AccountsComponent implements OnInit {
     this.creditFormGroup=this.fg.group(
       {
         accountId: this.fg.control(""),
-        amount: this.fg.control(0)
+        amount: this.fg.control(0),
+        description: this.fg.control("credit")
       }
     )
     this.debitFormGroup=this.fg.group(
       {
         accountId: this.fg.control(""),
-        amount: this.fg.control(0)
+        amount: this.fg.control(0),
+        description: this.fg.control("debit")
       }
     )
     this.transferFormGroup=this.fg.group(
       {
-        accountIdSource: this.fg.control(""),
-        accountIdDestination: this.fg.control(""),
-        amount: this.fg.control(0)
+        accountSource: this.fg.control(""),
+        accountDestination: this.fg.control(""),
+        amount: this.fg.control(0),
+        description: this.fg.control("transfer")
       }
     )
   }
@@ -58,14 +64,42 @@ export class AccountsComponent implements OnInit {
   }
 
   handleCredit() {
-
+    let credit:Credit=this.creditFormGroup.value;
+    this.accountService.operationCreditToAccount(credit).subscribe({
+      next : data=>{
+        alert("operation Credit has been saved successfully!");
+        this.creditFormGroup.reset();
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   handleDebit() {
+    let debit:Debit=this.debitFormGroup.value;
+    this.accountService.operationDebitToAccount(debit).subscribe({
+      next : data=>{
+        alert("operation Debit has been saved successfully!");
+        this.debitFormGroup.reset();
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
 
   }
 
   handleTransfer() {
-
+    let transfer:Transfer=this.transferFormGroup.value;
+    this.accountService.operationTransferToAccount(transfer).subscribe({
+      next : data=>{
+        alert("operation transfer has been saved successfully!");
+        this.transferFormGroup.reset();
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 }
