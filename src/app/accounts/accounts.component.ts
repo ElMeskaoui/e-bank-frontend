@@ -69,6 +69,7 @@ export class AccountsComponent implements OnInit {
       next : data=>{
         alert("operation Credit has been saved successfully!");
         this.creditFormGroup.reset();
+        this.handleSearchAccount();
       },
       error: err => {
         console.log(err);
@@ -82,6 +83,7 @@ export class AccountsComponent implements OnInit {
       next : data=>{
         alert("operation Debit has been saved successfully!");
         this.debitFormGroup.reset();
+        this.handleSearchAccount();
       },
       error: err => {
         console.log(err);
@@ -96,6 +98,7 @@ export class AccountsComponent implements OnInit {
       next : data=>{
         alert("operation transfer has been saved successfully!");
         this.transferFormGroup.reset();
+        this.handleSearchAccount();
       },
       error: err => {
         console.log(err);
